@@ -40,5 +40,26 @@ def add_transaction():
         return jsonify({"error": str({e})}), 500
 
 
+@app.route("/transactions", methods=["GET"])
+def get_transactions():
+    try:
+        transactions = []
+
+        # Check if file exists
+        if not os.path.exists(CSV_FILE):
+            return jsonify({"transactions": []}), 200
+
+        # Read CSV file
+        with open(CSV_FILE, "r", newline="") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                transactions.append(row)
+
+        return jsonify({"transactions": transactions}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run()
